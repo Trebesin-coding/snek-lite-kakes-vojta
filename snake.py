@@ -11,14 +11,16 @@ clock = pygame.time.Clock()
 elapsed_time = 0
 green_coin_time = 0
 gold_coin_time = 0
-gold_coin_time_spawn = random.randint(15, 30) * 1000
+green_coin_time_despawn = 0
+gold_coin_time_despawn = 0
+gold_coin_time_spawn = random.randint(10, 30) * 1000
 pause = False
-font = pygame.font.Font("D:/programování/pygame/snek-lite-kakes-vojta/PixelifySans-Regular.ttf", 25)
-win_font = pygame.font.Font("D:/programování/pygame/snek-lite-kakes-vojta/PixelifySans-Regular.ttf", 80)
+font = pygame.font.Font("PixelifySans-Regular.ttf", 25)
+win_font = pygame.font.Font("PixelifySans-Regular.ttf", 80)
 
-coin_surf = pygame.image.load("D:/programování/pygame/snek-lite-kakes-vojta/coin.png").convert_alpha()
-green_coin_surf = pygame.image.load("D:/programování/pygame/snek-lite-kakes-vojta/green_coin.png").convert_alpha()
-gold_coin_surf = pygame.image.load("D:/programování/pygame/snek-lite-kakes-vojta/gold_coin.png").convert_alpha()  
+coin_surf = pygame.image.load("coin.png").convert_alpha()
+green_coin_surf = pygame.image.load("green_coin.png").convert_alpha()
+gold_coin_surf = pygame.image.load("gold_coin.png").convert_alpha()  
 
 coin_x = random.randint(0, screen_width - 40)
 coin_y = random.randint(0, screen_height - 40)
@@ -30,12 +32,12 @@ green_coin_y = (screen_height * 40)
 green_coin_existence = False
 green_coin_rect = green_coin_surf.get_rect(midbottom=(green_coin_x, green_coin_y))
 
-gold_coin_x = random.randint(0, screen_width * 40)
-gold_coin_y = random.randint(0, screen_height * 40)
+gold_coin_x = (screen_width * 40)
+gold_coin_y = (screen_height * 40)
 gold_coin_existence = False
 gold_coin_rect = gold_coin_surf.get_rect(midbottom=(gold_coin_x, gold_coin_y))
 
-player_surf = pygame.image.load("D:/programování/pygame/snek-lite-kakes-vojta/snake.png").convert_alpha()
+player_surf = pygame.image.load("snake.png").convert_alpha()
 player_speed = 5
 player_score = 0
 player_x = screen_width / 2
@@ -87,6 +89,7 @@ while running:
         player_score += 100 
         elapsed_time = 0
         green_coin_time = 0
+        green_coin_time_despawn = 0
         green_coin_x = (screen_width * 40)
         green_coin_y = (screen_height * 40)
         green_coin_rect = green_coin_surf.get_rect(midbottom=(green_coin_x, green_coin_y))
@@ -97,22 +100,27 @@ while running:
         player_score += 1000 
         elapsed_time = 0
         gold_coin_time = 0
-        gold_coin_x = random.randint(0, screen_width * 40)
-        gold_coin_y = random.randint(0, screen_height * 40)
+        gold_coin_time_despawn = 0
+        gold_coin_x = (screen_width * 40)
+        gold_coin_y = (screen_height * 40)
         gold_coin_rect = gold_coin_surf.get_rect(midbottom=(gold_coin_x, gold_coin_y))
         gold_coin_existence = False
         pause = True
         
 
     if player_score >= 1000:
+         screen.fill("yellow")
          win_screen = win_font.render(f"You´ve won", False, "#000000")
          screen.blit(win_screen, (screen_width/3, screen_height/3))
-
+         
+         
     if not coin_existence:
         coin_x = random.randint(0, screen_width - 40)
         coin_y = random.randint(0, screen_height - 40)
         coin_existence =  True
         coin_rect = coin_surf.get_rect(midbottom=(coin_x, coin_y))
+
+
 
     if not green_coin_existence:
         green_coin_time += clock.get_time()
@@ -121,6 +129,18 @@ while running:
             green_coin_y = random.randint(0, screen_height - 40)
             green_coin_rect = green_coin_surf.get_rect(midbottom=(green_coin_x, green_coin_y))
             green_coin_existence = True
+            green_coin_time = 0
+
+    if green_coin_existence:        
+        green_coin_time_despawn += clock.get_time()
+        if green_coin_time_despawn >= 2000:
+            green_coin_x = (screen_width * 40)
+            green_coin_y = (screen_height * 40)
+            green_coin_rect = green_coin_surf.get_rect(midbottom=(green_coin_x, green_coin_y))
+            green_coin_existence = False
+            green_coin_time_despawn = 0
+
+
 
     if not gold_coin_existence:
         gold_coin_time += clock.get_time()
@@ -130,8 +150,16 @@ while running:
             gold_coin_rect = gold_coin_surf.get_rect(midbottom=(gold_coin_x, gold_coin_y))
             gold_coin_existence = True
             gold_coin_time = 0
-            gold_coin_time_spawn = random.randint(15, 30) * 1000
-    print(gold_coin_time)
-    print(gold_coin_time_spawn)
+            gold_coin_time_spawn = random.randint(10, 30) * 1000
+
+    if gold_coin_existence:
+        gold_coin_time_despawn += clock.get_time()
+        if gold_coin_time_despawn >= 2000:
+            gold_coin_x = (screen_width * 40)
+            gold_coin_y = (screen_height * 40)
+            gold_coin_rect = gold_coin_surf.get_rect(midbottom=(gold_coin_x, gold_coin_y))
+            gold_coin_existence = False
+            gold_coin_time_despawn = 0
+
     pygame.display.update()
     clock.tick(60)
