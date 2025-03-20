@@ -67,7 +67,7 @@ while running:
 
     screen.fill("white")
     score = font.render(f"Score: {player_score}", False, "#000000") 
-    screen.blit(score, (screen_width-400, 10))
+    screen.blit(score, (screen_width-200, 10))
     screen.blit(player_surf, player_rect)
     screen.blit(coin_surf, coin_rect)
     screen.blit(green_coin_surf, green_coin_rect)
